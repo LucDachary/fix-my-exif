@@ -1,0 +1,37 @@
+#!/usr/bin/env expect
+# Sun, 07 May 2023 20:39:59 +0200
+# A script to extract pictures date and time of take from the filenames.
+# Extracted datetimes are then written into the exif data so Shotwell updates its ordering.
+
+source "formatting.tcl"
+
+if {$argc < 1} {
+	puts [error "You must provide at least one folder where to look for pictures.\n" ]
+	puts "Usage:\n$ $argv0 pictures_folder/ …"
+	exit -1
+}
+
+puts [ bold "— EXIF pictures data fixer —" ]
+
+foreach arg $argv {
+	if {[file isdirectory $arg] == 0} {
+		puts [ error "$arg is not a directory." ]
+		exit -1
+	}
+	puts [ warning "(For now I only support " [underline .jpg] ", " [underline .jpeg] " filetypes.)" ]
+
+	set dir $arg
+	puts "Working in directory $dir…"
+
+	# TODO add the trailing slash $dir if it's not present
+
+	# https://www.tcl.tk/man/tcl8.5/tutorial/Tcl25.html
+	set files [ glob -nocomplain -types "f" "$dir/*.jpg" "$dir/*.jpeg" ]
+	puts "I have found [llength $files] picture(s)."
+
+	foreach picture $files {
+		puts $picture
+	}
+}
+
+exit 0
